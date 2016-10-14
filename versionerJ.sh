@@ -39,12 +39,12 @@
 		elmt=($(echo $item | sed 's/|/ /g'))
 		filename="${rootPath}${elmt[0]}"
 		selector=${elmt[1]}
-		needdle=${elmt[2]}
+		needle=${elmt[2]}
  		[ -f "$filename" ] || errExit "$filename not found!"
  		if [ ! $selector ]; then	
- 			[ "$(cat "$filename" | sed /$needdle/!d)" ] || errExit "Version tag not found in '$filename'"
+ 			[ "$(cat "$filename" | sed /$needle/!d)" ] || errExit "Version tag not found in '$filename'"
  		else		
- 			[ "$(cat "$filename" | sed -e /$selector/!d -e /$needdle/!d)" ] || errExit "Version tag not found in '$filename'"
+ 			[ "$(cat "$filename" | sed -e /$selector/!d -e /$needle/!d)" ] || errExit "Version tag not found in '$filename'"
  		fi
 	done
 
@@ -54,13 +54,13 @@
 		elmt=($(echo $item | sed 's/|/ /g'))
 		filename="${rootPath}${elmt[0]}"
 		selector=${elmt[1]}
-		needdle=${elmt[2]}
+		needle=${elmt[2]}
 		# work around to avoid EOF ending a line without CR
 			cat "$filename" | sed 's/+/+/' >"${filename}_tmp"
 			mv -f "${filename}_tmp" "${filename}"
 		#
 		linesamt0=$(cat "$filename" | wc -l | sed 's/ //g')
-		cat "$filename" | sed "s/\(${selector}.*${needdle}[ ]\{0,10\}['\"]\)\(.*\)\(['\"]\)/\1${1}\3/" >"${filename}_tmp"
+		cat "$filename" | sed "s/\(${selector}.*${needle}[ ]\{0,10\}['\"]\)\(.*\)\(['\"]\)/\1${1}\3/" >"${filename}_tmp"
 		linesamt1=$(cat "${filename}_tmp" | wc -l | sed 's/ //g')
 		[ $linesamt0 == $linesamt1 ] || errExit "Bug in replacement. Lines amount doesn't match."
 		mv -f "${filename}_tmp" "${filename}"
